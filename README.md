@@ -1,88 +1,90 @@
 # Rajbhi Jewellers
 
-Single-page brand site for Rajbhi Jewellers, Saswad, Dist. Pune. Online presence
-only — no cart, no prices, no checkout. The job of the page is to build trust and
-push people to the store or to WhatsApp.
+Single-page brand site for Rajbhi Jewellers — a family-run jewellery shop in
+Saswad, Dist. Pune, trading since 1968.
 
-Next.js (App Router) + Tailwind CSS v4, exported as a static site and deployed to
-Cloudflare.
+Online presence only: no cart, no prices, no checkout. The page exists to build
+trust and send people to the shop or to WhatsApp.
 
-## Run it
+**Live:** rajbhijewellers.com · **Hosting:** Cloudflare Workers (static assets)
+
+## Stack
+
+| | |
+| --- | --- |
+| Framework | Next.js 16, App Router, `output: "export"` |
+| Styling | Tailwind CSS v4 (`@theme` tokens in `globals.css`) |
+| Type | Cormorant Garamond + Inter · Tiro Devanagari Marathi + Noto Sans Devanagari |
+| Hosting | Cloudflare Workers Static Assets |
+| Runtime dependencies | none beyond React and Next |
+
+The whole site builds to plain HTML, CSS and JS. Nothing runs on a server.
+
+## Quick start
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # static export into ./out
+npm run dev        # http://localhost:3000
+npm run build      # static export into ./out
+npm run preview    # build, then serve through Cloudflare's local runtime
+npm run deploy     # build, then push live
 ```
 
-## Editing the store details
+## Where things are
 
-Everything real-world lives in **`src/lib/site.ts`** — phone, WhatsApp, address,
-opening year, Instagram, map links. Change it there and the header, hero, Visit Us
-section, footer and structured data all follow.
+```
+src/
+  app/
+    layout.tsx        fonts, metadata, JSON-LD, pre-paint language script
+    page.tsx          section order, nothing else
+    globals.css       palette, type and spacing tokens
+  components/
+    Header.tsx        sticky nav, language toggle, mobile menu
+    LanguageProvider.tsx
+    sections/         one file per section of the page
+    ui/               Button, SectionHeading, CollectionCard, Placeholder, Section
+  lib/
+    site.ts           every real-world detail — phone, address, links
+    content.ts        every word on the page, English and Marathi
+```
 
-Lines marked `TODO` are still placeholders:
+Two rules keep it easy to maintain:
 
-- `address.line1` — street / shop number
-- `address.line2` — optional landmark line (leave `""` to skip it)
-- `address.pin` — confirm the PIN code
-- opening hours live in `src/lib/content.ts` under `visit.hours`, in both languages
-
-## Copy and languages
-
-All text is in **`src/lib/content.ts`**, as one object per language (`en`, `mr`).
-Nothing is hard-coded in components, so a copy change is a one-line edit.
-
-The toggle sets `data-lang` on `<html>`, which swaps both the palette-level font
-variables (Cormorant Garamond / Inter → Tiro Devanagari Marathi / Noto Sans
-Devanagari) and the copy. The choice is remembered in `localStorage` and applied
-before first paint, so a returning Marathi visitor never sees a flash of English.
-The exported HTML is English, which is what search engines index.
-
-`{years}` inside the About copy is replaced at render time from
-`site.establishedYear`, so "Serving Saswad for 58 years" never goes stale.
-
-## Photographs
-
-Every image is currently a grey `<Placeholder />` block that reserves the right
-aspect ratio. To drop in real photographs, replace each `<Placeholder …/>` with
-`next/image` and keep the same ratio:
-
-| Where | Component | Ratio |
-| --- | --- | --- |
-| Hero | `sections/Hero.tsx` | fills the section |
-| Collections (×4) | `ui/CollectionCard.tsx` | 4:3 |
-| Made to order | `sections/MadeToOrder.tsx` | 4:5 |
-| Instagram (×6) | `sections/Instagram.tsx` | 1:1 |
-| Store photo | `sections/VisitUs.tsx` | 4:3 |
-
-Note that `next.config.ts` sets `images.unoptimized` because a static export has no
-image optimiser — size and compress the photographs before committing them.
+1. **No text is hard-coded in a component.** It all comes from `content.ts`.
+2. **No contact detail appears twice.** It all comes from `site.ts`.
 
 ## Design system
 
-- **Palette and type tokens**: `src/app/globals.css` (`@theme`)
-- **Buttons**: `src/components/ui/Button.tsx` — `primary`, `outline`, `quiet`
-- **Section headings**: `src/components/ui/SectionHeading.tsx`
-- **Collection cards**: `src/components/ui/CollectionCard.tsx`
-- **Section shell and container**: `src/components/ui/Section.tsx` — 80px vertical
-  rhythm on mobile, 128px from `md` up, all spacing on an 8px grid
+Defined once in `src/app/globals.css` under `@theme`:
 
-## Deploying to Cloudflare
+- **Ivory** `#FAF7F2` background · **Maroon** `#5A1A1F` primary ·
+  **Antique gold** `#B08D57` accent · **Charcoal** `#2B2B2B` text
+- Spacing on an 8px grid throughout; sections are 80px tall on mobile, 128px from
+  `md` up, via the `<Section>` component
+- Reusable pieces: `Button` (primary / outline / quiet), `SectionHeading`,
+  `CollectionCard`, `Placeholder`, `Section` + `Container`
 
-The build produces a plain static `out/` directory. Two ways to ship it:
+## The language toggle
 
-**Dashboard (no local tooling).** Cloudflare dashboard → Workers & Pages → Create →
-connect this repository, then:
+The header switches between English and मराठी. It works by setting `data-lang` on
+`<html>`, which does two things at once:
 
-- Build command: `npm run build`
-- Output directory: `out`
+- **Swaps the copy** — `LanguageProvider` reads the attribute and serves the
+  matching block from `content.ts`
+- **Swaps the type system** — `globals.css` redefines `--font-display` and
+  `--font-body` under `html[data-lang="mr"]`, so headings move from Cormorant
+  Garamond to Tiro Devanagari Marathi and body text from Inter to Noto Sans
+  Devanagari. Devanagari also drops the uppercase and wide letter-spacing used on
+  English labels, which that script should not have.
 
-Add `rajbhijewellers.com` under Custom domains once the first deploy is green.
+The choice is saved in `localStorage` and re-applied by a small inline script
+before the first paint, so a returning Marathi visitor never sees English flash
+up first. The exported HTML is English — that is what search engines index.
 
-**CLI.** `wrangler.jsonc` is already configured:
+## Documentation
 
-```bash
-npm run build
-npx wrangler deploy
-```
+| File | For |
+| --- | --- |
+| `CONTENT.md` | Changing text, details, hours and photographs |
+| `DEPLOY.md` | Putting it live on Cloudflare, and the custom domain |
+| `TODO.md` | What is still outstanding, and known limitations |

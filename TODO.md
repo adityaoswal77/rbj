@@ -46,14 +46,46 @@ Things the site still needs. Grouped by who can do them.
 - [ ] **Open Graph image.** Nothing shows as a preview when the link is shared on
       WhatsApp right now. One good photograph fixes it, once photography exists.
 - [ ] **robots.txt and sitemap.xml.** Not present yet.
+- [ ] **Retire the workers.dev address** once the custom domain is live, so it
+      stops competing with the real domain in search. See `DEPLOY.md`.
+
+## The one refactor worth considering
+
+**Render both languages into the HTML and hide one with CSS.**
+
+Today every section is a client component, so the page ships 616 KB of
+JavaScript (177 KB gzipped) — which includes the full Marathi copy, invisible to
+search engines. Marathi only appears after hydration.
+
+Rendering both languages into the static HTML and hiding one with a CSS rule
+keyed off the `data-lang` attribute the pre-paint script already sets:
+
+```css
+html[data-lang="en"] [data-lang-for="mr"],
+html[data-lang="mr"] [data-lang-for="en"] { display: none; }
+```
+
+would, in one move:
+
+- turn all seven sections into server components, dropping most of that 616 KB
+- make the language switch genuinely instant, including the words — no more
+  English text appearing in Marathi type
+- put the Marathi copy into crawlable HTML for the first time, which also makes
+  a proper `hreflang` possible
+
+Cost: the HTML roughly doubles, from ~55 KB to ~90 KB uncompressed — much less
+after compression, since the duplicated structure compresses well. For a brochure
+site whose visitors are mostly on mid-range Android phones on mobile data, that is
+a clearly good trade.
+
+It touches all seven section components, so it is a deliberate piece of work
+rather than a tweak. Worth doing before launch if there is time; not a blocker.
 
 ## Known limitations, decided deliberately
 
-- **The exported page is English.** Marathi is applied in the browser from the
-  visitor's saved choice. That means search engines index the English version.
-  For a single-page site this is the right trade — a separate `/mr/` page would
-  double the URLs to maintain for little gain. Revisit only if Marathi search
-  traffic turns out to matter.
+- **The exported page is English.** Marathi is applied in the browser after
+  hydration, so search engines index only the English version. See the refactor
+  above — this is fixable without adding a second URL.
 - **No image optimisation.** A static export has no server to resize images, so
   photographs have to be compressed by hand before they are added.
 - **No analytics.** Nothing tracks visitors. Cloudflare Web Analytics is free,

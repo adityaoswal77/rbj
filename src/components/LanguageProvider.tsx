@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useLayoutEffect,
   useMemo,
   useSyncExternalStore,
   type ReactNode,
@@ -37,6 +38,9 @@ function getServerSnapshot(): Lang {
 function subscribe(onStoreChange: () => void) {
   const onStorage = (event: StorageEvent) => {
     if (event.key !== LANG_STORAGE_KEY) return;
+    // A cleared key (newValue === null) means "no preference", not "English",
+    // so leave this tab on whatever it is already showing.
+    if (event.newValue === null) return;
     applyToDom(event.newValue === "mr" ? "mr" : "en");
     onStoreChange();
   };
@@ -58,6 +62,23 @@ const LanguageContext = createContext<LanguageValue | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const lang = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  // React Strict Mode remounts in development and resets <html> to the
+  // attributes it manages from JSX, discarding what the pre-paint script set.
+  // Re-applying here restores it. A no-op in production.
+  useLayoutEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(LANG_STORAGE_KEY);
+      if (stored === "mr" || stored === "en") {
+        if (document.documentElement.dataset.lang !== stored) {
+          applyToDom(stored);
+          window.dispatchEvent(new Event(LANG_EVENT));
+        }
+      }
+    } catch {
+      /* storage unavailable — English stands */
+    }
+  }, []);
 
   const setLang = useCallback((next: Lang) => {
     applyToDom(next);

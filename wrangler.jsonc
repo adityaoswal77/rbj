@@ -1,17 +1,21 @@
 {
   // wrangler.jsonc — Cloudflare Worker serving the static export in ./out
+  // Assets-only on purpose: no `main`. See DEPLOY.md for why.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "rbj",
   "compatibility_date": "2026-09-01",
   "assets": {
     "directory": "./out",
+    // Matches Next's `trailingSlash: true`; this is also the default.
+    "html_handling": "auto-trailing-slash",
+    // Unknown URLs get out/404.html with a real 404 status.
     "not_found_handling": "404-page"
   },
+  "routes": [
+    { "pattern": "rajbhijewellers.com", "custom_domain": true }
+  ],
   "observability": {
-    "logs": {
-      "enabled": true,
-      "invocation_logs": true,
-      "persist": true
-    }
+    "enabled": true,
+    "logs": { "invocation_logs": true }
   }
 }

@@ -13,7 +13,7 @@ export function Section({ id, children, className = "", divided = false }: Secti
   return (
     <section
       id={id}
-      className={`py-20 md:py-32 ${divided ? "border-t border-line" : ""} ${className}`}
+      className={`py-section md:py-section-lg ${divided ? "border-t border-line" : ""} ${className}`}
     >
       <Container>{children}</Container>
     </section>

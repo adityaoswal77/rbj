@@ -1,8 +1,6 @@
-import { site, yearsInBusiness } from "./site";
+import { buildYear, site, yearsInBusiness } from "./site";
 
 export type Lang = "en" | "mr";
-
-export const LANGS: Lang[] = ["en", "mr"];
 
 /** Latin -> Devanagari digits, so Marathi copy reads natively. */
 export function toDevanagariDigits(input: string | number): string {
@@ -13,7 +11,7 @@ export function toDevanagariDigits(input: string | number): string {
 /** Replaces {years} with the running count, localised per language. */
 function withYears(template: string, lang: Lang): string {
   const n = lang === "mr" ? toDevanagariDigits(yearsInBusiness) : String(yearsInBusiness);
-  return template.replace("{years}", n);
+  return template.replaceAll("{years}", n);
 }
 
 type Collection = {
@@ -30,7 +28,6 @@ type TrustPoint = {
 };
 
 export type Content = {
-  htmlLang: string;
   brand: { name: string; mark: string; sub: string };
   nav: { collections: string; about: string; visit: string; menu: string; close: string };
   cta: {
@@ -86,7 +83,6 @@ export type Content = {
 };
 
 const en: Content = {
-  htmlLang: "en",
   brand: { name: "Rajbhi Jewellers", mark: "Rajbhi", sub: "Jewellers" },
   nav: {
     collections: "Collections",
@@ -207,13 +203,12 @@ const en: Content = {
   },
   footer: {
     tagline: "Trusted jewellers of Saswad",
-    copyright: `© ${new Date().getFullYear()} ${site.name}. All rights reserved.`,
+    copyright: `© ${buildYear} ${site.name}. All rights reserved.`,
     instagram: "Instagram",
   },
 };
 
 const mr: Content = {
-  htmlLang: "mr",
   brand: { name: "राजभी ज्वेलर्स", mark: "राजभी", sub: "ज्वेलर्स" },
   nav: {
     collections: "संग्रह",
@@ -334,13 +329,13 @@ const mr: Content = {
   },
   footer: {
     tagline: "सासवडचे विश्वासू सराफ",
-    copyright: `© ${toDevanagariDigits(new Date().getFullYear())} राजभी ज्वेलर्स. सर्व हक्क राखीव.`,
+    copyright: `© ${toDevanagariDigits(buildYear)} राजभी ज्वेलर्स. सर्व हक्क राखीव.`,
     instagram: "इन्स्टाग्राम",
   },
 };
 
-/** Resolves {years} tokens at read time so copy stays a plain object. */
-function hydrate(c: Content, lang: Lang): Content {
+/** Resolves {years} tokens so the dictionaries stay plain, literal objects. */
+function resolveTokens(c: Content, lang: Lang): Content {
   return {
     ...c,
     about: {
@@ -352,6 +347,6 @@ function hydrate(c: Content, lang: Lang): Content {
 }
 
 export const content: Record<Lang, Content> = {
-  en: hydrate(en, "en"),
-  mr: hydrate(mr, "mr"),
+  en: resolveTokens(en, "en"),
+  mr: resolveTokens(mr, "mr"),
 };

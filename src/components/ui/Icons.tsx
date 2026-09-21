@@ -4,9 +4,9 @@ const stroke = {
   fill: "none",
   stroke: "currentColor",
   strokeWidth: 1.25,
-  strokeLinecap: "round" as const,
-  strokeLinejoin: "round" as const,
-};
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+} as const;
 
 export function WhatsAppIcon({ className = "h-4 w-4" }: IconProps) {
   return (

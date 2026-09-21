@@ -77,9 +77,14 @@ The header switches between English and मराठी. It works by setting `da
   Devanagari. Devanagari also drops the uppercase and wide letter-spacing used on
   English labels, which that script should not have.
 
-The choice is saved in `localStorage` and re-applied by a small inline script
-before the first paint, so a returning Marathi visitor never sees English flash
-up first. The exported HTML is English — that is what search engines index.
+The choice is saved in `localStorage`. A small inline script in `<head>` applies
+it to `<html>` before the first paint, so the right fonts and `lang` attribute are
+in place immediately — but **the copy itself only switches once React hydrates**.
+A returning Marathi visitor briefly sees English words in the Marathi typeface.
+
+The exported HTML is English, which is what search engines index; the Marathi copy
+exists only in the JavaScript bundle. Both of those are fixable together — see
+"Render both languages into the HTML" in `TODO.md`.
 
 ## Documentation
 

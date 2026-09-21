@@ -8,7 +8,6 @@
 
 export const site = {
   name: "Rajbhi Jewellers",
-  domain: "rajbhijewellers.com",
   url: "https://rajbhijewellers.com",
 
   establishedYear: 1968,
@@ -31,7 +30,8 @@ export const site = {
     state: "Maharashtra",
     /** TODO: confirm PIN code. */
     pin: "412301",
-    country: "India",
+    /** ISO country code, used in the structured data. */
+    country: "IN",
   },
 
   /**
@@ -45,8 +45,15 @@ export const site = {
   mapLink: "https://maps.app.goo.gl/rNuMUU1FNmTPFB4i6",
 } as const;
 
-/** Years in business, derived so it never goes stale. */
-export const yearsInBusiness = new Date().getFullYear() - site.establishedYear;
+/**
+ * The year this build was made, inlined by next.config.ts. Using it instead of
+ * `new Date()` keeps the server HTML and the client bundle in agreement — a
+ * runtime date would differ across New Year and break hydration.
+ */
+export const buildYear = Number(process.env.NEXT_PUBLIC_BUILD_YEAR);
+
+/** Years in business, recalculated on every build so it never goes stale. */
+export const yearsInBusiness = buildYear - site.establishedYear;
 
 /** `tel:` href with the Indian country code. */
 export const telHref = `tel:+91${site.phone}`;

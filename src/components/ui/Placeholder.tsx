@@ -13,9 +13,12 @@ type PlaceholderProps = {
 };
 
 /**
- * Stand-in for real photography. Swap each usage for <Image /> once the
- * store's own photographs are available — the surrounding layout already
- * reserves the correct aspect ratio.
+ * Stand-in for real photography.
+ *
+ * NOTE: this element *is* the aspect-ratio box — callers do not wrap it in one.
+ * So when real photographs arrive, keep this outer div and render
+ * `<Image fill sizes="..." />` inside it, rather than replacing it at each call
+ * site. Dropping an <Image> in directly would collapse the layout to zero height.
  */
 export function Placeholder({
   label,

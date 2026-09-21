@@ -17,19 +17,23 @@
   --color-charcoal: #2b2b2b;
   --color-charcoal-soft: #6b6560;
   --color-placeholder: #e4ded4;
-  --color-placeholder-deep: #d5cdc0;
   --color-line: #e3dbcf;
 
   /* Typography — remapped per language, see [data-lang] below */
   --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-body: var(--font-inter), "Inter", system-ui, sans-serif;
 
-  /* Section rhythm */
+  /* Section rhythm — consumed by <Section> as py-section / md:py-section-lg */
   --spacing-section: 5rem; /* 80px  — mobile */
   --spacing-section-lg: 8rem; /* 128px — desktop */
 }
 
-/* Marathi swaps the whole type system in one place. */
+/* `mr:` applies only when Marathi is active, e.g. `mr:normal-case`. */
+@custom-variant mr (&:where(html[data-lang="mr"] *));
+
+/* Marathi swaps the whole type system in one place.
+   NOTE: the @theme block above must stay non-inline. `@theme inline` would bake
+   the Cormorant/Inter stacks into the utilities and silently break this swap. */
 html[data-lang="mr"] {
   --font-display: var(--font-tiro), "Tiro Devanagari Marathi", Georgia, serif;
   --font-body: var(--font-noto), "Noto Sans Devanagari", system-ui, sans-serif;

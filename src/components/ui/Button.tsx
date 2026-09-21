@@ -23,16 +23,16 @@ const sizes: Record<Size, string> = {
 };
 
 /** Marathi is not an uppercase script — drop the caps and tight tracking. */
-const devanagari =
-  "[html[data-lang='mr']_&]:normal-case [html[data-lang='mr']_&]:tracking-[0.02em] " +
-  "[html[data-lang='mr']_&]:text-[0.875rem]";
+const devanagari = "mr:normal-case mr:tracking-[0.02em] mr:text-[0.875rem]";
 
 type ButtonProps = {
   variant?: Variant;
   size?: Size;
   children: ReactNode;
   className?: string;
-} & Omit<ComponentPropsWithoutRef<"a">, "className">;
+  /** Required: an <a> without an href is not focusable or keyboard-operable. */
+  href: string;
+} & Omit<ComponentPropsWithoutRef<"a">, "className" | "href">;
 
 /** Every call to action on the site renders through this one component. */
 export function Button({

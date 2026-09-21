@@ -21,6 +21,17 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // The menu and its toggle are hidden from `lg` up. Without this, resizing
+  // while it is open strands `body { overflow: hidden }` with no way to undo it.
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 64rem)");
+    const onChange = () => {
+      if (mq.matches) setOpen(false);
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
   // Lock the page behind the mobile menu.
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import {
   Cormorant_Garamond,
@@ -28,12 +28,15 @@ const tiro = Tiro_Devanagari_Marathi({
   subsets: ["devanagari", "latin"],
   weight: "400",
   display: "swap",
+  // Only used once Marathi is selected — keep it off the critical path.
+  preload: false,
 });
 
 const noto = Noto_Sans_Devanagari({
   variable: "--font-noto",
   subsets: ["devanagari", "latin"],
   display: "swap",
+  preload: false,
 });
 
 const description =
@@ -67,6 +70,10 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#5a1a1f",
+};
+
 /** Local business structured data, so the store surfaces in local search. */
 const jsonLd = {
   "@context": "https://schema.org",
@@ -82,7 +89,7 @@ const jsonLd = {
     addressLocality: site.address.city,
     addressRegion: site.address.state,
     postalCode: site.address.pin,
-    addressCountry: "IN",
+    addressCountry: site.address.country,
   },
   sameAs: [site.instagramUrl],
   hasMap: site.mapLink,
@@ -93,12 +100,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="en"
       data-lang="en"
+      // The inline script below rewrites lang/data-lang before React hydrates.
+      suppressHydrationWarning
       className={`${cormorant.variable} ${inter.variable} ${tiro.variable} ${noto.variable} h-full`}
     >
       <head>
         <script
-          // Applies the stored language before first paint, so a returning
-          // Marathi visitor never sees a flash of English.
+          // Applies the stored language to <html> before first paint, so the
+          // correct fonts and `lang` are in place immediately. The copy itself
+          // still switches at hydration — see LanguageProvider.
           dangerouslySetInnerHTML={{
             __html:
               "(function(){try{var l=localStorage.getItem('rbj-lang');if(l==='mr'||l==='en'){var d=document.documentElement;d.lang=l;d.dataset.lang=l;}}catch(e){}})();",
@@ -106,9 +116,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
         />
-        <meta name="theme-color" content="#5a1a1f" />
       </head>
       <body className="flex min-h-full flex-col">
         <LanguageProvider>{children}</LanguageProvider>

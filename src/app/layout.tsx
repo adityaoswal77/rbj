@@ -6,7 +6,6 @@ import {
   Noto_Sans_Devanagari,
   Tiro_Devanagari_Marathi,
 } from "next/font/google";
-import { LanguageProvider } from "@/components/LanguageProvider";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -106,9 +105,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     >
       <head>
         <script
-          // Applies the stored language to <html> before first paint, so the
-          // correct fonts and `lang` are in place immediately. The copy itself
-          // still switches at hydration — see LanguageProvider.
+          // Applies the stored language to <html> before first paint. Both
+          // languages are already in the HTML, so this switches the copy, the
+          // fonts and the `lang` attribute together, before anything is drawn.
           dangerouslySetInnerHTML={{
             __html:
               "(function(){try{var l=localStorage.getItem('rbj-lang');if(l==='mr'||l==='en'){var d=document.documentElement;d.lang=l;d.dataset.lang=l;}}catch(e){}})();",
@@ -122,7 +121,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body className="flex min-h-full flex-col">
-        <LanguageProvider>{children}</LanguageProvider>
+        {children}
       </body>
     </html>
   );

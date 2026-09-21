@@ -1,23 +1,20 @@
-"use client";
-
-import { useLang } from "@/components/LanguageProvider";
 import { InstagramIcon } from "@/components/ui/Icons";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { T, en, mr } from "@/components/T";
 import { site } from "@/lib/site";
+import { toDevanagariDigits } from "@/lib/content";
 
 const TILES = [1, 2, 3, 4, 5, 6];
 
 export function Instagram() {
-  const { t } = useLang();
-
   return (
     <Section divided>
       <SectionHeading
-        eyebrow={t.instagram.eyebrow}
-        title={t.instagram.title}
-        intro={t.instagram.intro}
+        eyebrow={<T en={en.instagram.eyebrow} mr={mr.instagram.eyebrow} />}
+        title={<T en={en.instagram.title} mr={mr.instagram.title} />}
+        intro={<T en={en.instagram.intro} mr={mr.instagram.intro} />}
         align="center"
       />
 
@@ -28,14 +25,16 @@ export function Instagram() {
             href={site.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`${t.instagram.imageLabel} ${n} — @${site.instagramHandle}`}
             className="group relative block overflow-hidden"
           >
-            <Placeholder
-              label={`${t.instagram.imageLabel} ${n}`}
-              aspect="aspect-square"
-              compact
-            />
+            {/* The images are decorative, so the link is named by this instead. */}
+            <span className="sr-only">
+              <T
+                en={`${en.instagram.imageLabel} ${n} — @${site.instagramHandle}`}
+                mr={`${mr.instagram.imageLabel} ${toDevanagariDigits(n)} — @${site.instagramHandle}`}
+              />
+            </span>
+            <Placeholder label={`${en.instagram.imageLabel} ${n}`} aspect="aspect-square" compact />
             <span
               aria-hidden="true"
               className="absolute inset-0 flex items-center justify-center bg-maroon/0 text-ivory opacity-0 transition-all duration-300 group-hover:bg-maroon/55 group-hover:opacity-100"
@@ -51,10 +50,10 @@ export function Instagram() {
           href={site.instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="eyebrow inline-flex items-center gap-2 text-maroon transition-colors duration-200 hover:text-gold"
+          className="eyebrow inline-flex min-h-11 items-center gap-2 text-gold-text transition-colors duration-200 hover:text-maroon"
         >
           <InstagramIcon className="h-4 w-4" />
-          {t.cta.followUs}
+          <T en={en.cta.followUs} mr={mr.cta.followUs} />
         </a>
       </div>
     </Section>

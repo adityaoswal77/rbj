@@ -28,7 +28,6 @@ type TrustPoint = {
 };
 
 export type Content = {
-  brand: { name: string; mark: string; sub: string };
   nav: { collections: string; about: string; visit: string; menu: string; close: string };
   cta: {
     visitStore: string;
@@ -83,7 +82,6 @@ export type Content = {
 };
 
 const en: Content = {
-  brand: { name: "Rajbhi Jewellers", mark: "Rajbhi", sub: "Jewellers" },
   nav: {
     collections: "Collections",
     about: "About",
@@ -209,7 +207,6 @@ const en: Content = {
 };
 
 const mr: Content = {
-  brand: { name: "राजभी ज्वेलर्स", mark: "राजभी", sub: "ज्वेलर्स" },
   nav: {
     collections: "संग्रह",
     about: "आमच्याविषयी",

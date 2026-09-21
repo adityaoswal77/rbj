@@ -1,4 +1,5 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { Lang } from "@/lib/content";
 
 type Variant = "primary" | "outline" | "quiet";
 type Size = "md" | "sm";
@@ -32,6 +33,8 @@ type ButtonProps = {
   className?: string;
   /** Required: an <a> without an href is not focusable or keyboard-operable. */
   href: string;
+  /** Set when the href itself differs by language, e.g. a translated WhatsApp message. */
+  "data-lang-for"?: Lang;
 } & Omit<ComponentPropsWithoutRef<"a">, "className" | "href">;
 
 /** Every call to action on the site renders through this one component. */

@@ -1,8 +1,9 @@
+import type { ReactNode } from "react";
 import { Placeholder } from "./Placeholder";
 
 type CollectionCardProps = {
-  title: string;
-  description: string;
+  title: ReactNode;
+  description: ReactNode;
   imageLabel: string;
 };
 

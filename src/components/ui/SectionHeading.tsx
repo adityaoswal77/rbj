@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 
 type SectionHeadingProps = {
-  eyebrow?: string;
+  eyebrow?: ReactNode;
   title: ReactNode;
-  intro?: string;
+  intro?: ReactNode;
   align?: "left" | "center";
   /** Renders in ivory for use on the maroon footer / dark panels. */
   tone?: "dark" | "light";
@@ -27,7 +27,7 @@ export function SectionHeading({
       className={`flex flex-col ${centered ? "items-center text-center" : "items-start"} ${className}`}
     >
       {eyebrow && (
-        <span className={`eyebrow ${tone === "light" ? "text-gold-soft" : "text-gold"}`}>
+        <span className={`eyebrow ${tone === "light" ? "text-gold-soft" : "text-gold-text"}`}>
           {eyebrow}
         </span>
       )}

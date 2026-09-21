@@ -66,25 +66,61 @@ Defined once in `src/app/globals.css` under `@theme`:
 
 ## The language toggle
 
-The header switches between English and मराठी. It works by setting `data-lang` on
-`<html>`, which does two things at once:
+The header switches between English and मराठी. **Both languages are rendered into
+the static HTML**; a CSS rule shows one and hides the other, keyed off a
+`data-lang` attribute on `<html>`:
 
-- **Swaps the copy** — `LanguageProvider` reads the attribute and serves the
-  matching block from `content.ts`
-- **Swaps the type system** — `globals.css` redefines `--font-display` and
-  `--font-body` under `html[data-lang="mr"]`, so headings move from Cormorant
-  Garamond to Tiro Devanagari Marathi and body text from Inter to Noto Sans
-  Devanagari. Devanagari also drops the uppercase and wide letter-spacing used on
-  English labels, which that script should not have.
+```css
+html[data-lang="en"] [data-lang-for="mr"],
+html[data-lang="mr"] [data-lang-for="en"] { display: none; }
+```
 
-The choice is saved in `localStorage`. A small inline script in `<head>` applies
-it to `<html>` before the first paint, so the right fonts and `lang` attribute are
-in place immediately — but **the copy itself only switches once React hydrates**.
-A returning Marathi visitor briefly sees English words in the Marathi typeface.
+Three things follow from that, and they are the reason it is built this way:
 
-The exported HTML is English, which is what search engines index; the Marathi copy
-exists only in the JavaScript bundle. Both of those are fixable together — see
-"Render both languages into the HTML" in `TODO.md`.
+- **The switch is instant and happens before first paint.** A small inline script
+  in `<head>` reads the saved choice and sets `data-lang` before anything is
+  drawn, so a returning Marathi visitor sees Marathi immediately — verified with
+  JavaScript entirely disabled.
+- **The page needs no JavaScript to be correct.** Because switching is pure CSS,
+  every section is a Server Component. `Header` and `LanguageToggle` are the only
+  client components, and they exist for the sticky-scroll state and the toggle
+  click — not for the copy.
+- **The Marathi copy is in the HTML**, so it can be read by search engines and by
+  anyone whose JavaScript fails.
+
+Setting `data-lang` also swaps the type system: `globals.css` redefines
+`--font-display` and `--font-body` under `html[data-lang="mr"]`, moving headings
+from Cormorant Garamond to Tiro Devanagari Marathi and body text from Inter to
+Noto Sans Devanagari, and dropping the uppercase and wide letter-spacing that
+Devanagari should not have.
+
+**Keeping it that way:** the dictionary in `content.ts` must never be imported by
+a client component — that would pull every word on the site back into the
+JavaScript bundle. `Header` receives the handful of strings it needs as props
+from `page.tsx`, and the wordmark lives separately in `lib/brand.ts`.
+
+### What it costs
+
+| | before | after |
+| --- | --- | --- |
+| HTML (gzipped) | ~12 KB | 18.3 KB |
+| JavaScript | 616 KB raw / 177 KB gzip | 576 KB raw / 169 KB gzip |
+| Marathi in crawlable HTML | no | yes |
+| Fonts preloaded, English visit | 6 | 2 |
+
+The JavaScript barely moved, and that is worth understanding: the remaining
+bundle is React plus the App Router runtime, which ships as long as *any* client
+component exists. Removing it entirely would mean rewriting the sticky header and
+the toggle in plain JavaScript and dropping React from the page — a different
+project. What the refactor actually bought was the Marathi HTML and the
+flash-free switch, not the bundle.
+
+### The trade-off
+
+One URL now serves two languages. That keeps the toggle instant and avoids a
+second page to maintain, but it is weaker for search than separate `/` and `/mr/`
+routes would be, because a page mixing two languages muddies Google's language
+detection. If Marathi search traffic ever matters commercially, see `TODO.md`.
 
 ## Documentation
 

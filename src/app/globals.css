@@ -13,6 +13,9 @@
   --color-maroon: #5a1a1f;
   --color-maroon-deep: #430f13;
   --color-gold: #b08d57;
+  /* Gold at #b08d57 is only 2.89:1 on ivory — below AA. This darker tone is
+     5.22:1 on ivory and 4.75:1 on ivory-deep, for text and focus rings. */
+  --color-gold-text: #7d643e;
   --color-gold-soft: #d8c4a4;
   --color-charcoal: #2b2b2b;
   --color-charcoal-soft: #6b6560;
@@ -26,6 +29,14 @@
   /* Section rhythm — consumed by <Section> as py-section / md:py-section-lg */
   --spacing-section: 5rem; /* 80px  — mobile */
   --spacing-section-lg: 8rem; /* 128px — desktop */
+}
+
+/* Both languages are rendered into the HTML; exactly one is shown.
+   Attribute selectors out-specify utility classes, so the visible element keeps
+   whatever `display` its own classes give it — no !important needed. */
+html[data-lang="en"] [data-lang-for="mr"],
+html[data-lang="mr"] [data-lang-for="en"] {
+  display: none;
 }
 
 /* `mr:` applies only when Marathi is active, e.g. `mr:normal-case`. */
@@ -59,7 +70,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-gold);
+  outline: 2px solid var(--color-gold-text);
   outline-offset: 3px;
 }
 

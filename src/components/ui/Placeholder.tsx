@@ -1,7 +1,7 @@
 import { FrameIcon } from "./Icons";
 
 type PlaceholderProps = {
-  /** Describes the photograph that belongs here. */
+  /** Note to whoever adds the photograph. Not read out — see below. */
   label: string;
   /** Tailwind aspect ratio utility, e.g. "aspect-[4/5]". Ignored when `fill`. */
   aspect?: string;
@@ -14,6 +14,11 @@ type PlaceholderProps = {
 
 /**
  * Stand-in for real photography.
+ *
+ * Marked `aria-hidden`: every photograph on this page sits beside text that
+ * already says what it is, so the images are decorative and a screen reader
+ * gains nothing from the placeholder caption. Real photographs should likewise
+ * get `alt=""` unless one of them carries information the copy does not.
  *
  * NOTE: this element *is* the aspect-ratio box — callers do not wrap it in one.
  * So when real photographs arrive, keep this outer div and render
@@ -31,8 +36,7 @@ export function Placeholder({
 
   return (
     <div
-      role="img"
-      aria-label={label}
+      aria-hidden="true"
       className={`${box} overflow-hidden bg-placeholder ${className}`}
     >
       <div className="absolute inset-2 border border-gold/20" aria-hidden="true" />

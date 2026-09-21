@@ -1,22 +1,17 @@
 {
-// wrangler.jsonc
-  "name": "rbj",
+  // wrangler.jsonc — Cloudflare Worker serving the static export in ./out
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "rajbhi-jewellers",
+  "name": "rbj",
   "compatibility_date": "2026-09-01",
   "assets": {
     "directory": "./out",
-    "not_found_handling": "404-page",
-{
-  // ...
+    "not_found_handling": "404-page"
+  },
   "observability": {
     "logs": {
       "enabled": true,
       "invocation_logs": true,
       "persist": true
     }
-  },
-  // ...
-}
   }
 }

@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   Rajbhi Jewellers — design tokens
+   Palette, type scale and spacing are the single source of truth.
+   Spacing follows an 8px system throughout.
+---------------------------------------------------------------- */
+
+@theme {
+  /* Palette */
+  --color-ivory: #faf7f2;
+  --color-ivory-deep: #f2ece3;
+  --color-maroon: #5a1a1f;
+  --color-maroon-deep: #430f13;
+  --color-gold: #b08d57;
+  --color-gold-soft: #d8c4a4;
+  --color-charcoal: #2b2b2b;
+  --color-charcoal-soft: #6b6560;
+  --color-placeholder: #e4ded4;
+  --color-placeholder-deep: #d5cdc0;
+  --color-line: #e3dbcf;
+
+  /* Typography — remapped per language, see [data-lang] below */
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-body: var(--font-inter), "Inter", system-ui, sans-serif;
+
+  /* Section rhythm */
+  --spacing-section: 5rem; /* 80px  — mobile */
+  --spacing-section-lg: 8rem; /* 128px — desktop */
+}
+
+/* Marathi swaps the whole type system in one place. */
+html[data-lang="mr"] {
+  --font-display: var(--font-tiro), "Tiro Devanagari Marathi", Georgia, serif;
+  --font-body: var(--font-noto), "Noto Sans Devanagari", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Sticky header height + breathing room for anchor jumps */
+  scroll-padding-top: 6rem;
+}
+
+body {
+  background-color: var(--color-ivory);
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-gold);
+  color: var(--color-ivory);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Utility: small caps eyebrow label used above section headings */
+@utility eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.6875rem; /* 11px */
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Devanagari should not be shouted in uppercase or over-tracked. */
+html[data-lang="mr"] .eyebrow {
+  letter-spacing: 0.08em;
+  text-transform: none;
+  font-size: 0.75rem;
+}

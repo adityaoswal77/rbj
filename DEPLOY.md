@@ -28,6 +28,9 @@ npx wrangler login     # first time only, opens a browser
 npm run deploy         # builds, then uploads
 ```
 
+`wrangler login` needs a browser, so this has to be run from your own machine —
+it cannot be done from a headless environment.
+
 `npm run deploy` runs `next build && wrangler deploy`. The build writes `out/`,
 and wrangler uploads whatever is in it.
 

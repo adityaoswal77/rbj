@@ -75,10 +75,22 @@ on the server — **resize and compress photographs before adding them**. Aim fo
 under 300 KB each. Anything straight off a phone camera will be several megabytes
 and will make the page slow on mobile data.
 
-Always write something in `alt=""` describing the photograph, unless it is purely
-decorative.
+The placeholders are marked `aria-hidden`, because each one sits beside text that
+already says what it is — the grey box next to "Gold Jewellery" adds nothing for
+someone using a screen reader. Real photographs should keep `alt=""` for the same
+reason, unless a particular photograph carries information the copy does not.
 
-## 4. Seeing your changes
+## 4. One rule for developers
+
+`src/lib/content.ts` must never be imported by a file that starts with
+`"use client"`. Both languages are rendered into the HTML and swapped with CSS,
+which is what keeps the page fast; importing the dictionary into client code
+would pull every word on the site back into the JavaScript bundle and undo that.
+
+If a client component needs a word, pass it in as a prop from `page.tsx`, the way
+the header does.
+
+## 5. Seeing your changes
 
 ```bash
 npm run dev

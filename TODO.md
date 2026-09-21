@@ -43,49 +43,55 @@ Things the site still needs. Grouped by who can do them.
 - [ ] **A real logo.** The wordmark is currently set in type (Cormorant Garamond).
       If the shop has a logo, it replaces `src/components/ui/Logo.tsx` and the
       browser tab icon at `src/app/icon.svg`.
-- [ ] **Open Graph image.** Nothing shows as a preview when the link is shared on
-      WhatsApp right now. One good photograph fixes it, once photography exists.
-- [ ] **robots.txt and sitemap.xml.** Not present yet.
 - [ ] **Retire the workers.dev address** once the custom domain is live, so it
       stops competing with the real domain in search. See `DEPLOY.md`.
 
-## The one refactor worth considering
+## From the review pass — not yet done
 
-**Render both languages into the HTML and hide one with CSS.**
+Ranked by what actually moves the needle for the shop.
 
-Today every section is a client component, so the page ships 616 KB of
-JavaScript (177 KB gzipped) — which includes the full Marathi copy, invisible to
-search engines. Marathi only appears after hydration.
-
-Rendering both languages into the static HTML and hiding one with a CSS rule
-keyed off the `data-lang` attribute the pre-paint script already sets:
-
-```css
-html[data-lang="en"] [data-lang-for="mr"],
-html[data-lang="mr"] [data-lang-for="en"] { display: none; }
-```
-
-would, in one move:
-
-- turn all seven sections into server components, dropping most of that 616 KB
-- make the language switch genuinely instant, including the words — no more
-  English text appearing in Marathi type
-- put the Marathi copy into crawlable HTML for the first time, which also makes
-  a proper `hreflang` possible
-
-Cost: the HTML roughly doubles, from ~55 KB to ~90 KB uncompressed — much less
-after compression, since the duplicated structure compresses well. For a brochure
-site whose visitors are mostly on mid-range Android phones on mobile data, that is
-a clearly good trade.
-
-It touches all seven section components, so it is a deliberate piece of work
-rather than a tweak. Worth doing before launch if there is time; not a blocker.
+- [ ] **Open Graph image.** Every WhatsApp share of this link currently renders
+      as a bare text stub with no picture. Since WhatsApp is the main channel,
+      this is the highest-value item on the page. Needs one photograph, then an
+      `app/opengraph-image.png` at 1200×630 and `twitter.card:
+      "summary_large_image"`.
+- [ ] **robots.txt and sitemap.xml** (`app/robots.ts`, `app/sitemap.ts` — both
+      work under static export). Worth disallowing the RSC payload duplicates
+      the export publishes (`/index.txt`, `/__next.*`), which are crawlable
+      copies of the page. Do not disallow `/_next/static/` — Google needs the
+      CSS and JS to render the page.
+- [ ] **Fill out the structured data** once the real address is in: `image`,
+      `geo` coordinates (important, because "Main Road, Saswad" is not
+      geocodable on its own), `openingHoursSpecification` — the hours are already
+      on the page, just not marked up — `priceRange`, and
+      `alternateName: "राजभी ज्वेलर्स"` for Marathi local search.
+- [ ] **Marathi gaps.** The address stays in English when Marathi is selected
+      (`addressLines` is built in `site.ts`, outside the dictionary).
+- [ ] **Preload fonts per language.** English visits still download Cormorant
+      and Inter unconditionally; a Marathi visitor downloads those 84 KB and
+      never renders them. The inline pre-paint script already reads the saved
+      language — it could inject the right two preload tags instead.
+- [ ] **Two Devanagari families cost 183 KB** (Noto Sans Devanagari 121 KB, Tiro
+      62 KB) for Marathi visitors. Using Noto for both headings and body would
+      save 62 KB. A design call, not an obvious win.
+- [ ] **Consider replacing the Google Maps embed with a facade** — the existing
+      placeholder image with the "See on map" button over it, opening Maps in a
+      new tab. Removes the page's only third-party request, its cookies, and a
+      tab stop. On a phone, the deep link into the Maps app is better UX than an
+      embedded pan-and-zoom anyway.
 
 ## Known limitations, decided deliberately
 
-- **The exported page is English.** Marathi is applied in the browser after
-  hydration, so search engines index only the English version. See the refactor
-  above — this is fixable without adding a second URL.
+- **One URL serves both languages.** Both are in the HTML and a CSS rule shows
+  one. This keeps the toggle instant and means there is no second page to keep
+  in sync, but it is weaker for search than separate `/` and `/mr/` routes,
+  because a page mixing two languages muddies Google's language detection.
+  If Devanagari search traffic ever matters commercially, the fix is
+  `app/[lang]/page.tsx` with `generateStaticParams(["en","mr"])` and proper
+  `hreflang`. Note that static export rules out server-side `Accept-Language`
+  redirects, so the toggle would become a plain link between two URLs.
+  Most customers arrive via Google Business Profile rather than web search,
+  which is why this is not ranked higher.
 - **No image optimisation.** A static export has no server to resize images, so
   photographs have to be compressed by hand before they are added.
 - **No analytics.** Nothing tracks visitors. Cloudflare Web Analytics is free,

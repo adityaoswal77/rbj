@@ -45,10 +45,14 @@ export function VisitUs() {
             label={<T en={en.visit.labels.address} mr={mr.visit.labels.address} />}
           >
             <address className="not-italic">
-              {addressLines.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
+              {(["en", "mr"] as const).map((lang) => (
+                <Only key={lang} lang={lang}>
+                  {addressLines[lang].map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </Only>
               ))}
             </address>
           </DetailRow>
@@ -126,20 +130,16 @@ export function VisitUs() {
         </div>
       </div>
 
-      <div className="mt-16 md:mt-20">
-        {/* The placeholder sits underneath, so a blocked or slow map never
-            leaves a blank rectangle. */}
-        <div className="relative aspect-[4/3] w-full md:aspect-[21/9]">
-          <Placeholder label={en.visit.mapLabel} fill />
-          {site.mapEmbedUrl && (
-            <iframe
-              src={site.mapEmbedUrl}
-              title={en.visit.mapLabel}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="absolute inset-0 h-full w-full border-0"
-            />
-          )}
+      {/* A facade, not an embedded map: no third-party request, no cookies, and
+          on a phone the link opens the Maps app, which beats pan-and-zoom in a
+          frame. The placeholder is where a screenshot of the map would go. */}
+      <div className="relative mt-16 aspect-[4/3] w-full md:mt-20 md:aspect-[21/9]">
+        <Placeholder label={en.visit.mapLabel} fill />
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-6 text-center">
+          <PinIcon className="h-8 w-8 text-maroon" />
+          <Button href={site.mapLink} target="_blank" rel="noopener noreferrer">
+            <T en={en.cta.seeOnMap} mr={mr.cta.seeOnMap} />
+          </Button>
         </div>
       </div>
     </Section>

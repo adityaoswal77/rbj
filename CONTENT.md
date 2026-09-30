@@ -16,6 +16,13 @@ whatsapp: "917083091096",     // with country code, no +
 establishedYear: 1968,
 ```
 
+The address is written in both languages, line by line — change the English and
+the Marathi together:
+
+```ts
+line1: { en: "Main Road", mr: "मेन रोड" },
+```
+
 `geo` is the map pin Google reads from the structured data. It was copied from
 the shop's Google listing; if the listing's pin ever moves, open `mapLink` in a
 browser and copy the two numbers after `!3d` and `!4d` in the address bar.
@@ -77,6 +84,7 @@ Keep to these shapes so nothing shifts:
 | Made to order | `components/sections/MadeToOrder.tsx` | 4:5, portrait |
 | Instagram tiles (×6) | `components/sections/Instagram.tsx` | square |
 | Store photograph | `components/sections/VisitUs.tsx` | 4:3, landscape |
+| Map (a screenshot of the Google listing, under the See on map button) | `components/sections/VisitUs.tsx` | 4:3 on phones, 21:9 from tablet up |
 | Share image | replace `app/opengraph-image.tsx` with `app/opengraph-image.jpg` | 1200×630 |
 
 Because the site is exported as plain files, there is no image optimiser running

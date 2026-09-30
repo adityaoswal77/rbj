@@ -31,8 +31,11 @@ npm run deploy         # builds, then uploads
 `wrangler login` needs a browser, so this has to be run from your own machine —
 it cannot be done from a headless environment.
 
-`npm run deploy` runs `next build && wrangler deploy`. The build writes `out/`,
-and wrangler uploads whatever is in it.
+`npm run deploy` runs `npm run build && wrangler deploy`. The build writes `out/`
+(and then `scripts/preload-fonts.mjs` adds the per-language font preloads to
+its HTML), and wrangler uploads whatever is in it. Anything that builds the site
+— including a Cloudflare Git build — must run `npm run build`, not `next build`
+on its own, or the pages ship with no font preloads.
 
 To check the config without uploading anything:
 
@@ -111,14 +114,15 @@ Two things to know before editing it:
   matching blocks comma-joins the values, so `/_next/static/*` would end up with
   two conflicting `Cache-Control` values. HTML is deliberately left on
   Cloudflare's default (`max-age=0, must-revalidate`) so deploys go live at once.
-- **The CSP has to allow the Google Maps iframe.** `frame-src` lists both
-  `maps.google.com` and `www.google.com`, because the keyless embed can redirect
-  between them. If you ever tighten the CSP, check the map still loads. Also do
-  not add `Cross-Origin-Embedder-Policy: require-corp` or
-  `Permissions-Policy: geolocation=()` — both break the embed.
+- **The page frames nothing, and the CSP says so.** There is no `frame-src`, so
+  `default-src 'self'` applies. The map is a link to Google Maps, not an
+  embedded iframe; if one is ever added back, it needs a `frame-src` entry for
+  `maps.google.com` and `www.google.com` (the keyless embed redirects between
+  them).
 
-`script-src` needs `'unsafe-inline'`. The page has two inline scripts (the
-pre-paint language script and the JSON-LD block) plus Next's own hydration
+`script-src` needs `'unsafe-inline'`. The page has three inline scripts (the
+font preloader at the top of `<head>`, the pre-paint language script, and the
+JSON-LD block) plus Next's own hydration
 scripts, and a static export cannot generate per-request nonces.
 
 `script-src` also lists `https://static.cloudflareinsights.com`. Web Analytics
@@ -209,9 +213,9 @@ Then, by hand:
 - Tap **WhatsApp Us** and confirm a chat opens to the right number with the
   message pre-filled.
 - Tap **Visit Store** and confirm the map opens on the shop, not the town centre.
-- Scroll to the map and confirm it renders, with the browser console open for
-  CSP errors. (Checked 30 Sep 2026: the embed lands on the shop's own listing,
-  "RAJBHI JEWELLERS, Main Rd, below Dalvi Hospital".)
+- Tap **See on map** under Visit Us and confirm it opens the same listing
+  (checked 30 Sep 2026: "RAJBHI JEWELLERS, Main Rd, below Dalvi Hospital").
+  Keep the browser console open for CSP errors.
 - Switch to मराठी, reload, and confirm it stays in Marathi.
 
 ## Rolling back

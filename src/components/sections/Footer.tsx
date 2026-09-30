@@ -25,10 +25,14 @@ export function Footer() {
 
           <div className="md:col-span-4">
             <address className="text-[0.9375rem] leading-relaxed text-ivory/75 not-italic">
-              {addressLines.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
+              {(["en", "mr"] as const).map((lang) => (
+                <Only key={lang} lang={lang}>
+                  {addressLines[lang].map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </Only>
               ))}
             </address>
           </div>

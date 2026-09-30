@@ -6,6 +6,8 @@
  * updates at once.
  */
 
+import type { Lang } from "./content";
+
 export const site = {
   name: "Rajbhi Jewellers",
   url: "https://rajbhijewellers.com",
@@ -20,28 +22,22 @@ export const site = {
   instagramHandle: "rajbhijewellers",
   instagramUrl: "https://www.instagram.com/rajbhijewellers/",
 
+  /** Each line in both languages. The English is what the structured data uses. */
   address: {
     /** TODO: replace with the real street / shop-number line. */
-    line1: "Main Road",
+    line1: { en: "Main Road", mr: "मेन रोड" },
     /** TODO: optional landmark line, e.g. "Opposite Sangameshwar Temple". Leave "" to skip. */
-    line2: "",
-    city: "Saswad",
-    district: "Pune",
-    state: "Maharashtra",
-    /** TODO: confirm PIN code. */
+    line2: { en: "", mr: "" },
+    city: { en: "Saswad", mr: "सासवड" },
+    district: { en: "Pune", mr: "पुणे" },
+    state: { en: "Maharashtra", mr: "महाराष्ट्र" },
+    /** Kept in Latin digits in both languages, like the phone number: people copy it into forms. */
     pin: "412301",
     /** ISO country code, used in the structured data. */
     country: "IN",
   },
 
-  /**
-   * Keyless Google Maps embed, driven by a search query — works with no API key.
-   * To pin the exact listing instead: Google Maps -> Share -> Embed a map -> copy
-   * the iframe `src` and paste it here. Set to "" to fall back to a grey placeholder.
-   */
-  mapEmbedUrl:
-    "https://maps.google.com/maps?q=Rajbhi%20Jewellers%2C%20Saswad%2C%20Pune&z=16&output=embed",
-  /** Share link from Google Maps — used by the "See on map" button. */
+  /** Share link from Google Maps — used by every "See on map" button. */
   mapLink: "https://maps.app.goo.gl/rNuMUU1FNmTPFB4i6",
 
   /**
@@ -74,9 +70,17 @@ export function whatsappHref(message: string): string {
 }
 
 /** Empty lines are dropped, so an unused landmark line leaves no gap. */
-export const addressLines: string[] = [
-  site.address.line1,
-  site.address.line2,
-  `${site.address.city}, Dist. ${site.address.district}`,
-  `${site.address.state} ${site.address.pin}`,
-].filter(Boolean);
+export const addressLines: Record<Lang, string[]> = {
+  en: [
+    site.address.line1.en,
+    site.address.line2.en,
+    `${site.address.city.en}, Dist. ${site.address.district.en}`,
+    `${site.address.state.en} ${site.address.pin}`,
+  ].filter(Boolean),
+  mr: [
+    site.address.line1.mr,
+    site.address.line2.mr,
+    `${site.address.city.mr}, जि. ${site.address.district.mr}`,
+    `${site.address.state.mr} ${site.address.pin}`,
+  ].filter(Boolean),
+};

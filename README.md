@@ -53,6 +53,8 @@ src/
     content.ts        every word on the page, English and Marathi
     brand.ts          the wordmark in both languages (safe for client code)
     lang-store.ts     reads and writes <html data-lang>
+scripts/
+  preload-fonts.mjs   after the build: preloads the fonts for the saved language
 public/
   _headers            security, cache and search-engine headers (see DEPLOY.md)
 ```
@@ -102,6 +104,16 @@ Setting `data-lang` also swaps the type system: `globals.css` redefines
 from Cormorant Garamond to Tiro Devanagari Marathi and body text from Inter to
 Noto Sans Devanagari, and dropping the uppercase and wide letter-spacing that
 Devanagari should not have.
+
+The fonts are preloaded per language too. Next can only emit a fixed set of
+preload tags, so all four fonts are `preload: false` and `scripts/preload-fonts.mjs`
+runs after `next build`: it reads the hashed font URLs from the built CSS and puts
+a small script straight after `<meta charset>` that preloads the English pair or
+the Devanagari pair, depending on the saved language. A returning Marathi visitor
+no longer downloads the 84 KB of English fonts, and gets the Devanagari ones from
+the first moment instead of after the stylesheet. If a Next upgrade changes the
+output so the script cannot find a font, it fails the build rather than shipping
+without preloads.
 
 **Keeping it that way:** the dictionary in `content.ts` must never be imported by
 a client component — that would pull every word on the site back into the

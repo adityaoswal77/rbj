@@ -10,17 +10,22 @@ import { brand } from "@/lib/brand";
 import { site } from "@/lib/site";
 import "./globals.css";
 
+// None of the four is preloaded by Next: scripts/preload-fonts.mjs adds the
+// preloads after the build, choosing the pair for the visitor's saved language.
+
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   display: "swap",
+  preload: false,
 });
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const tiro = Tiro_Devanagari_Marathi({
@@ -28,7 +33,6 @@ const tiro = Tiro_Devanagari_Marathi({
   subsets: ["devanagari", "latin"],
   weight: "400",
   display: "swap",
-  // Only used once Marathi is selected — keep it off the critical path.
   preload: false,
 });
 
@@ -97,9 +101,9 @@ const jsonLd = {
   foundingDate: String(site.establishedYear),
   address: {
     "@type": "PostalAddress",
-    streetAddress: [site.address.line1, site.address.line2].filter(Boolean).join(", "),
-    addressLocality: site.address.city,
-    addressRegion: site.address.state,
+    streetAddress: [site.address.line1.en, site.address.line2.en].filter(Boolean).join(", "),
+    addressLocality: site.address.city.en,
+    addressRegion: site.address.state.en,
     postalCode: site.address.pin,
     addressCountry: site.address.country,
   },

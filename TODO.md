@@ -8,7 +8,8 @@ Things the site still needs. Grouped by who can do them.
       listing reads "Main Rd, below Dalvi Hospital, Kumbharwada, Saswad,
       Maharashtra 412301" — if that is right, use it here so the site and the
       listing match word for word (Google cross-checks them).
-      → `src/lib/site.ts`, `address.line1` / `address.line2`
+      → `src/lib/site.ts`, `address.line1` / `address.line2` — each has an `en`
+        and an `mr` version; update both.
 - [x] **PIN code.** 412301 matches the Google listing.
 - [ ] **Confirm opening hours.** Currently Mon–Sat 10:30–20:30, Sun 10:30–14:00 —
       a guess, not your actual hours. Include any weekly off or festival closures.
@@ -63,20 +64,17 @@ Things the site still needs. Grouped by who can do them.
       `openingHoursSpecification` (only once the hours are real — marking up a
       guess puts wrong hours into Google) and `priceRange`. `geo`,
       `alternateName` and `image` are done.
-- [ ] **Marathi gaps.** The address stays in English when Marathi is selected
-      (`addressLines` is built in `site.ts`, outside the dictionary).
-- [ ] **Preload fonts per language.** English visits still download Cormorant
-      and Inter unconditionally; a Marathi visitor downloads those 84 KB and
-      never renders them. The inline pre-paint script already reads the saved
-      language — it could inject the right two preload tags instead.
+- [x] **Marathi address.** The address now switches with the language
+      (`मेन रोड, सासवड, जि. पुणे`). The PIN stays in Latin digits, like the phone.
+- [x] **Preload fonts per language.** Done by `scripts/preload-fonts.mjs`
+      after the build; see README → "The language toggle".
 - [ ] **Two Devanagari families cost 183 KB** (Noto Sans Devanagari 121 KB, Tiro
       62 KB) for Marathi visitors. Using Noto for both headings and body would
       save 62 KB. A design call, not an obvious win.
-- [ ] **Consider replacing the Google Maps embed with a facade** — the existing
-      placeholder image with the "See on map" button over it, opening Maps in a
-      new tab. Removes the page's only third-party request, its cookies, and a
-      tab stop. On a phone, the deep link into the Maps app is better UX than an
-      embedded pan-and-zoom anyway.
+- [x] **Google Maps embed replaced with a facade** — the placeholder with a
+      "See on map" button over it. No third-party request, no cookies, and
+      `frame-src` is gone from the CSP. A screenshot of the map listing can
+      replace the placeholder later (see `CONTENT.md`).
 - [ ] **Text contrast over the hero.** Lighthouse flags the eyebrow, the
       language toggle and "JEWELLERS" in the header at ~3.7:1 against the
       maroon scrim (4.5:1 needed). Recheck once the hero photograph is in — the

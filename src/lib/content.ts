@@ -191,7 +191,7 @@ const en: Content = {
     intro:
       "We are on the main road in Saswad, a short walk from the bus stand. Tea is on us.",
     imageLabel: "Our store in Saswad",
-    mapLabel: "Google Map — Rajbhi Jewellers, Saswad",
+    mapLabel: "Map screenshot — Rajbhi Jewellers, Saswad",
     labels: {
       address: "Address",
       hours: "Opening hours",
@@ -322,7 +322,7 @@ const mr: Content = {
     intro:
       "आम्ही सासवडच्या मुख्य रस्त्यावर, बसस्थानकापासून थोड्याच अंतरावर आहोत. चहा आमच्याकडून.",
     imageLabel: "सासवडमधील आमचं दुकान",
-    mapLabel: "गूगल नकाशा — राजभी ज्वेलर्स, सासवड",
+    mapLabel: "नकाशाचे छायाचित्र — राजभी ज्वेलर्स, सासवड",
     labels: {
       address: "पत्ता",
       hours: "वेळ",

@@ -48,6 +48,7 @@ export function Button({
   return (
     <a
       className={`${base} ${variants[variant]} ${sizes[size]} ${devanagari} ${className}`}
+      lang={rest["data-lang-for"]}
       {...rest}
     >
       {children}

@@ -8,7 +8,7 @@ type SectionHeadingProps = {
   /** Renders in ivory for use on the maroon footer / dark panels. */
   tone?: "dark" | "light";
   className?: string;
-  as?: "h2" | "h3";
+  as?: "h1" | "h2" | "h3";
 };
 
 /** The one heading block used by every section, for a consistent voice. */

@@ -121,14 +121,34 @@ Two things to know before editing it:
 pre-paint language script and the JSON-LD block) plus Next's own hydration
 scripts, and a static export cannot generate per-request nonces.
 
+`script-src` also lists `https://static.cloudflareinsights.com`. Web Analytics
+is switched on in the dashboard, and Cloudflare injects its beacon into the
+HTML at the edge; without that entry the CSP blocks it and nothing is counted
+(this was the case until it was added). Its reports go to the site's own
+`/cdn-cgi/rum`, which `connect-src 'self'` already covers. If you ever turn Web
+Analytics off, the entry can go.
+
+The rest of the file is for search engines:
+
+- **`X-Robots-Tag: noindex`** on `/index.txt`, `/__next.*`, `/_not-found/*` and
+  `/404/*`. The static export publishes these alongside the page — RSC payloads
+  and two copies of the 404 page — and all of them answer 200, so without the
+  header they are indexable duplicates (the 404 copies are soft 404s). It is a
+  header rather than a `Disallow` in robots.txt on purpose: a disallowed URL can
+  still be indexed, because the crawler never gets to read the noindex.
+- **`Content-Type: image/png` on `/opengraph-image`.** Next writes the share
+  image without a file extension, so Cloudflare cannot infer the type.
+- **`Strict-Transport-Security: max-age=31536000`**, without
+  `includeSubDomains` or `preload`, so it binds only this hostname and can be
+  walked back by lowering `max-age`.
+
 ## The custom domain
 
-rajbhijewellers.com is registered on Cloudflare but not yet serving the site.
+rajbhijewellers.com is attached and serving the site (checked 30 Sep 2026).
 
-The Worker config now declares the domain, so **the next `npm run deploy` will
-attach it for you** and issue the certificate — no DNS editing needed. One
-precondition: Cloudflare will refuse if the apex already has a CNAME record, so
-delete any existing record for `rajbhijewellers.com` first.
+The Worker config declares the domain, so `npm run deploy` keeps it attached and
+the certificate renewed — no DNS editing needed. If it ever has to be re-attached,
+note that Cloudflare will refuse while the apex has a CNAME record.
 
 If you would rather do it by hand, it is **Workers & Pages → rbj → Settings →
 Domains & Routes → Add → Custom domain**.
@@ -162,8 +182,10 @@ stays publicly crawlable and competes with your real domain in search results.
 leaves the site with no reachable address at all while the certificate is still
 being issued.
 
-Also worth switching on at the zone level, under SSL/TLS → Edge Certificates:
-**Always Use HTTPS**, and **HSTS** (start without `preload`).
+Also switch on **Always Use HTTPS** at the zone level, under SSL/TLS → Edge
+Certificates. Until it is on, `http://rajbhijewellers.com/` serves the page with
+a 200 rather than redirecting. HSTS is already sent by `_headers`, so leave the
+dashboard HSTS setting off — having both would send the header twice.
 
 ## After a deploy
 
@@ -171,7 +193,15 @@ Also worth switching on at the zone level, under SSL/TLS → Edge Certificates:
 curl -sI https://rajbhijewellers.com/ | grep -iE 'content-security|x-frame|cache-control'
 curl -sI https://rajbhijewellers.com/nope | head -1        # expect 404, not 200
 curl -sI https://www.rajbhijewellers.com/ | head -3        # expect 301 to apex
+curl -sI http://rajbhijewellers.com/ | head -3             # expect 301 to https
+curl -s https://rajbhijewellers.com/robots.txt | tail -4   # expect the Sitemap line
+curl -sI https://rajbhijewellers.com/index.txt | grep -i x-robots   # expect noindex
+curl -sI https://rajbhijewellers.com/opengraph-image | grep -i content-type  # image/png
 ```
+
+To see what a WhatsApp or Facebook share will look like, paste the URL into
+Facebook's Sharing Debugger (developers.facebook.com/tools/debug) — it also
+forces a refresh of their cached copy after the share image changes.
 
 Then, by hand:
 
@@ -179,9 +209,9 @@ Then, by hand:
 - Tap **WhatsApp Us** and confirm a chat opens to the right number with the
   message pre-filled.
 - Tap **Visit Store** and confirm the map opens on the shop, not the town centre.
-- Scroll to the map and confirm it renders. This is the one thing that could not
-  be tested before deploy — Google is blocked from the build environment — so it
-  is worth an actual look, with the browser console open for CSP errors.
+- Scroll to the map and confirm it renders, with the browser console open for
+  CSP errors. (Checked 30 Sep 2026: the embed lands on the shop's own listing,
+  "RAJBHI JEWELLERS, Main Rd, below Dalvi Hospital".)
 - Switch to मराठी, reload, and confirm it stays in Marathi.
 
 ## Rolling back

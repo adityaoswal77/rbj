@@ -79,6 +79,7 @@ export type Content = {
     hours: string[];
   };
   footer: { tagline: string; copyright: string; instagram: string };
+  notFound: { eyebrow: string; title: string; body: string; home: string };
 };
 
 const en: Content = {
@@ -204,6 +205,12 @@ const en: Content = {
     copyright: `© ${buildYear} ${site.name}. All rights reserved.`,
     instagram: "Instagram",
   },
+  notFound: {
+    eyebrow: "Page not found",
+    title: "This page is not here",
+    body: "The link may be old or mistyped. Everything about the shop is on the home page.",
+    home: "Go to the home page",
+  },
 };
 
 const mr: Content = {
@@ -328,6 +335,12 @@ const mr: Content = {
     tagline: "सासवडचे विश्वासू सराफ",
     copyright: `© ${toDevanagariDigits(buildYear)} राजभी ज्वेलर्स. सर्व हक्क राखीव.`,
     instagram: "इन्स्टाग्राम",
+  },
+  notFound: {
+    eyebrow: "पान सापडले नाही",
+    title: "हे पान इथे नाही",
+    body: "लिंक जुनी किंवा चुकीची असू शकते. दुकानाविषयी सर्व माहिती मुख्य पानावर आहे.",
+    home: "मुख्य पानावर जा",
   },
 };
 

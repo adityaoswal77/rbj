@@ -7,7 +7,7 @@ import { Instagram } from "@/components/sections/Instagram";
 import { MadeToOrder } from "@/components/sections/MadeToOrder";
 import { VisitUs } from "@/components/sections/VisitUs";
 import { en, mr } from "@/components/T";
-import { site, whatsappHref } from "@/lib/site";
+import { whatsappHref } from "@/lib/site";
 
 /** Only what the client-side header needs — not the whole dictionary. */
 const headerCopy: HeaderCopy = {
@@ -23,7 +23,6 @@ const headerCopy: HeaderCopy = {
     en: whatsappHref(en.cta.whatsappGeneral),
     mr: whatsappHref(mr.cta.whatsappGeneral),
   },
-  brandName: site.name,
 };
 
 export default function Page() {

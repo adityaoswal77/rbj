@@ -16,6 +16,10 @@ whatsapp: "917083091096",     // with country code, no +
 establishedYear: 1968,
 ```
 
+`geo` is the map pin Google reads from the structured data. It was copied from
+the shop's Google listing; if the listing's pin ever moves, open `mapLink` in a
+browser and copy the two numbers after `!3d` and `!4d` in the address bar.
+
 `establishedYear` is the only place the age of the shop is written down. "Serving
 Saswad for 58 years" is calculated from it, so it will still be right next year
 without anyone touching it.
@@ -38,6 +42,10 @@ both languages:
 hours: ["Monday – Saturday: 10:30 am – 8:30 pm", "Sunday: 10:30 am – 2:00 pm"],
 hours: ["सोमवार – शनिवार: सकाळी १०:३० – रात्री ८:३०", "रविवार: सकाळी १०:३० – दुपारी २:००"],
 ```
+
+Two things outside the page itself also read from here: the **share image**
+(the picture WhatsApp shows when someone sends the link) uses `hero.eyebrow`
+and `hero.tagline`, and the **404 page** uses the `notFound` block.
 
 `{years}` inside the About text is replaced automatically with the number of years
 the shop has been open. Leave it as `{years}` — don't type a number.
@@ -69,6 +77,7 @@ Keep to these shapes so nothing shifts:
 | Made to order | `components/sections/MadeToOrder.tsx` | 4:5, portrait |
 | Instagram tiles (×6) | `components/sections/Instagram.tsx` | square |
 | Store photograph | `components/sections/VisitUs.tsx` | 4:3, landscape |
+| Share image | replace `app/opengraph-image.tsx` with `app/opengraph-image.jpg` | 1200×630 |
 
 Because the site is exported as plain files, there is no image optimiser running
 on the server — **resize and compress photographs before adding them**. Aim for

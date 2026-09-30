@@ -21,7 +21,6 @@ export type HeaderCopy = {
   close: Pair;
   whatsappLabel: Pair;
   whatsappHref: Pair;
-  brandName: string;
 };
 
 const LANGS: Lang[] = ["en", "mr"];
@@ -79,7 +78,9 @@ export function Header({ copy }: { copy: HeaderCopy }) {
     >
       <Container>
         <div className="flex h-20 items-center justify-between gap-6 md:h-24">
-          <a href="#top" aria-label={copy.brandName} className="shrink-0">
+          {/* Named by the wordmark itself, so the accessible name matches what
+              is on screen — and is Marathi when Marathi is showing. */}
+          <a href="#top" className="shrink-0">
             <Logo tone={tone} />
           </a>
 
@@ -93,7 +94,7 @@ export function Header({ copy }: { copy: HeaderCopy }) {
                 }`}
               >
                 {LANGS.map((l) => (
-                  <span key={l} data-lang-for={l}>
+                  <span key={l} data-lang-for={l} lang={l}>
                     {link.label[l]}
                   </span>
                 ))}
@@ -150,7 +151,7 @@ export function Header({ copy }: { copy: HeaderCopy }) {
                     className="border-b border-line py-4 font-display text-2xl text-maroon"
                   >
                     {LANGS.map((l) => (
-                      <span key={l} data-lang-for={l}>
+                      <span key={l} data-lang-for={l} lang={l}>
                         {link.label[l]}
                       </span>
                     ))}

@@ -7,7 +7,8 @@ export const { en, mr } = content;
 /**
  * Renders a string in both languages. Exactly one is visible — globals.css
  * hides the other based on `html[data-lang]`, which the pre-paint script sets
- * before anything is drawn.
+ * before anything is drawn. Each half carries its own `lang`, because the
+ * served HTML says `<html lang="en">` and a crawler reads both halves.
  *
  * This is what keeps the page a Server Component: no React state is involved in
  * switching language, so none of the section code ships to the browser.
@@ -15,8 +16,8 @@ export const { en, mr } = content;
 export function T({ en: enText, mr: mrText }: { en: string; mr: string }) {
   return (
     <>
-      <span data-lang-for="en">{enText}</span>
-      <span data-lang-for="mr">{mrText}</span>
+      <span data-lang-for="en" lang="en">{enText}</span>
+      <span data-lang-for="mr" lang="mr">{mrText}</span>
     </>
   );
 }
@@ -38,7 +39,7 @@ export function Only({
   children: ReactNode;
 }) {
   return (
-    <Tag data-lang-for={lang} className={className}>
+    <Tag data-lang-for={lang} lang={lang} className={className}>
       {children}
     </Tag>
   );

@@ -16,14 +16,14 @@ export function Logo({ tone = "dark", className = "" }: LogoProps) {
       <span
         className={`font-display text-[1.625rem] font-medium tracking-[0.02em] transition-colors duration-300 md:text-[1.75rem] ${primary}`}
       >
-        <span data-lang-for="en">{brand.mark.en}</span>
-        <span data-lang-for="mr">{brand.mark.mr}</span>
+        <span data-lang-for="en" lang="en">{brand.mark.en}</span>
+        <span data-lang-for="mr" lang="mr">{brand.mark.mr}</span>
       </span>
       <span className="mt-1.5 flex items-center gap-2">
         <span aria-hidden="true" className={`h-px w-4 transition-colors duration-300 ${rule}`} />
         <span className={`eyebrow text-[0.625rem] transition-colors duration-300 ${secondary}`}>
-          <span data-lang-for="en">{brand.sub.en}</span>
-          <span data-lang-for="mr">{brand.sub.mr}</span>
+          <span data-lang-for="en" lang="en">{brand.sub.en}</span>
+          <span data-lang-for="mr" lang="mr">{brand.sub.mr}</span>
         </span>
       </span>
     </span>

@@ -6,6 +6,7 @@ import {
   Noto_Sans_Devanagari,
   Tiro_Devanagari_Marathi,
 } from "next/font/google";
+import { brand } from "@/lib/brand";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -41,10 +42,14 @@ const noto = Noto_Sans_Devanagari({
 const description =
   "Rajbhi Jewellers — a family-run jeweller in Saswad, Dist. Pune, since 1968. BIS hallmarked gold, silver, bridal sets and gemstone rings made to order.";
 
+// 58 characters: inside the 50–60 Google shows in full, and it leads with the
+// two things people search for — what the shop sells, and where it is.
+const title = `${site.name} — Gold & Silver Jewellers in Saswad, Pune`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — Trusted jewellers of Saswad`,
+    default: title,
     template: `%s — ${site.name}`,
   },
   description,
@@ -62,11 +67,15 @@ export const metadata: Metadata = {
     alternateLocale: "mr_IN",
     url: site.url,
     siteName: site.name,
-    title: `${site.name} — Trusted jewellers of Saswad`,
+    title,
     description,
   },
+  // The image itself comes from app/opengraph-image.tsx; this makes X and
+  // other Twitter-card readers show it large rather than as a thumbnail.
+  twitter: { card: "summary_large_image" },
   alternates: { canonical: site.url },
-  robots: { index: true, follow: true },
+  // No `robots` here: index/follow is the default, and setting it explicitly
+  // put a second, contradictory robots tag on the 404 page beside Next's noindex.
 };
 
 export const viewport: Viewport = {
@@ -77,9 +86,13 @@ export const viewport: Viewport = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "JewelryStore",
+  "@id": `${site.url}/#store`,
   name: site.name,
+  alternateName: `${brand.mark.mr} ${brand.sub.mr}`,
   description,
-  url: site.url,
+  url: `${site.url}/`,
+  // The export writes app/opengraph-image.tsx to `/opengraph-image`, no extension.
+  image: `${site.url}/opengraph-image`,
   telephone: `+91${site.phone}`,
   foundingDate: String(site.establishedYear),
   address: {
@@ -90,6 +103,7 @@ const jsonLd = {
     postalCode: site.address.pin,
     addressCountry: site.address.country,
   },
+  geo: { "@type": "GeoCoordinates", ...site.geo },
   sameAs: [site.instagramUrl],
   hasMap: site.mapLink,
 };

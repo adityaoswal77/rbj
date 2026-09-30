@@ -16,7 +16,7 @@ trust and send people to the shop or to WhatsApp.
 | Styling | Tailwind CSS v4 (`@theme` tokens in `globals.css`) |
 | Type | Cormorant Garamond + Inter · Tiro Devanagari Marathi + Noto Sans Devanagari |
 | Hosting | Cloudflare Workers Static Assets |
-| Runtime dependencies | none beyond React and Next |
+| Runtime dependencies | none beyond React and Next (`@fontsource/cormorant-garamond` is build-time only, for the share image) |
 
 The whole site builds to plain HTML, CSS and JS. Nothing runs on a server.
 
@@ -37,15 +37,24 @@ src/
   app/
     layout.tsx        fonts, metadata, JSON-LD, pre-paint language script
     page.tsx          section order, nothing else
+    not-found.tsx     the 404 page, in both languages
+    opengraph-image.tsx  the picture shown when the link is shared
+    robots.ts         allow everything, point at the sitemap
+    sitemap.ts        the one URL, dated at build time
     globals.css       palette, type and spacing tokens
   components/
     Header.tsx        sticky nav, language toggle, mobile menu
-    LanguageProvider.tsx
+    T.tsx             <T en mr> and <Only lang> — render both languages
     sections/         one file per section of the page
-    ui/               Button, SectionHeading, CollectionCard, Placeholder, Section
+    ui/               Button, SectionHeading, CollectionCard, Placeholder, Section,
+                      LanguageToggle, Logo, Icons
   lib/
-    site.ts           every real-world detail — phone, address, links
+    site.ts           every real-world detail — phone, address, links, map pin
     content.ts        every word on the page, English and Marathi
+    brand.ts          the wordmark in both languages (safe for client code)
+    lang-store.ts     reads and writes <html data-lang>
+public/
+  _headers            security, cache and search-engine headers (see DEPLOY.md)
 ```
 
 Two rules keep it easy to maintain:
@@ -121,6 +130,27 @@ One URL now serves two languages. That keeps the toggle instant and avoids a
 second page to maintain, but it is weaker for search than separate `/` and `/mr/`
 routes would be, because a page mixing two languages muddies Google's language
 detection. If Marathi search traffic ever matters commercially, see `TODO.md`.
+Each Marathi fragment carries `lang="mr"`, so crawlers at least know which text
+is which.
+
+## Search
+
+What the site does for search engines, and where each piece lives:
+
+| | |
+| --- | --- |
+| Title (58 chars) and description | `layout.tsx`, `metadata` |
+| Canonical URL | `layout.tsx`, `alternates.canonical` |
+| `JewelryStore` structured data — address, phone, map pin, Marathi name | `layout.tsx`, `jsonLd`; details from `site.ts` |
+| Share image (WhatsApp, Facebook, X) | `opengraph-image.tsx`, rendered to PNG at build |
+| robots.txt, sitemap.xml | `robots.ts`, `sitemap.ts` |
+| 404 with `noindex` and a link home | `not-found.tsx` |
+| `noindex` on the export's duplicate files | `public/_headers` |
+
+Checked on 30 Sep 2026 against Lighthouse (mobile): performance 97, SEO 100,
+LCP 2.2 s, CLS 0.005. What is left needs accounts or the shop's input
+(Search Console, Business Profile, real address, hours, photographs); see
+`TODO.md`.
 
 ## Documentation
 

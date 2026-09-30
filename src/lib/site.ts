@@ -43,6 +43,13 @@ export const site = {
     "https://maps.google.com/maps?q=Rajbhi%20Jewellers%2C%20Saswad%2C%20Pune&z=16&output=embed",
   /** Share link from Google Maps — used by the "See on map" button. */
   mapLink: "https://maps.app.goo.gl/rNuMUU1FNmTPFB4i6",
+
+  /**
+   * The pin of the Google listing that `mapLink` opens (its `!3d…!4d…` values).
+   * Used for the structured data, because "Main Road, Saswad" alone is not
+   * geocodable. If the listing is ever moved, copy the new pin from its URL.
+   */
+  geo: { latitude: 18.3458115, longitude: 74.0292625 },
 } as const;
 
 /**

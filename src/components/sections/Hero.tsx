@@ -12,8 +12,9 @@ export function Hero() {
       className="relative flex min-h-[92svh] items-end overflow-hidden md:min-h-[88vh]"
     >
       <Placeholder label={en.hero.imageLabel} fill />
-      {/* Flat scrim, not a heavy gradient — just enough for the type to read. */}
-      <div aria-hidden="true" className="absolute inset-0 bg-maroon/70" />
+      {/* Flat scrim, not a heavy gradient. At /80 the gold eyebrow (4.7:1) and the
+          ivory/80 header text (5.5:1) clear AA even over a light photograph. */}
+      <div aria-hidden="true" className="absolute inset-0 bg-maroon/80" />
       <div
         aria-hidden="true"
         className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-maroon-deep/40 to-transparent"

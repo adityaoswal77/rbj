@@ -8,7 +8,7 @@ type LogoProps = {
 /** Wordmark: display-face name over a letterspaced descriptor, split by a gold rule. */
 export function Logo({ tone = "dark", className = "" }: LogoProps) {
   const primary = tone === "light" ? "text-ivory" : "text-maroon";
-  const secondary = tone === "light" ? "text-ivory/70" : "text-charcoal-soft";
+  const secondary = tone === "light" ? "text-ivory/80" : "text-charcoal-soft";
   const rule = tone === "light" ? "bg-gold-soft/60" : "bg-gold/60";
 
   return (

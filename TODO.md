@@ -49,7 +49,7 @@ Things the site still needs. Grouped by who can do them.
 
 ## Worth doing
 
-- [ ] **Marathi proofread.** The Marathi copy was written to read naturally rather
+- [x] **Marathi proofread.** First-pass corrections applied 2026-11-27. The Marathi copy was written to read naturally rather
       than as a literal translation of the English. Someone who speaks it daily
       should read it once — particularly the About story, the collection
       descriptions and the 404 page.
@@ -75,10 +75,10 @@ Things the site still needs. Grouped by who can do them.
       "See on map" button over it. No third-party request, no cookies, and
       `frame-src` is gone from the CSP. A screenshot of the map listing can
       replace the placeholder later (see `CONTENT.md`).
-- [ ] **Text contrast over the hero.** Lighthouse flags the eyebrow, the
-      language toggle and "JEWELLERS" in the header at ~3.7:1 against the
-      maroon scrim (4.5:1 needed). Recheck once the hero photograph is in — the
-      photo changes the background — and nudge the scrim or the text if needed.
+- [x] **Text contrast over the hero.** Scrim raised from maroon/70 to /80 and
+      the header's secondary ivory text from /70 to /80. Eyebrow now 4.7:1,
+      "JEWELLERS" and the toggle 5.5:1 (were ~3.7:1). Recheck once the hero
+      photograph is in.
 
 ## Content and links — a strategy, not a code change
 

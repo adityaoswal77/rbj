@@ -27,7 +27,7 @@ export function LanguageToggle({ tone = "dark", className = "" }: LanguageToggle
 
   const active = tone === "light" ? "text-ivory" : "text-maroon";
   const idle =
-    tone === "light" ? "text-ivory/70 hover:text-ivory" : "text-charcoal hover:text-maroon";
+    tone === "light" ? "text-ivory/80 hover:text-ivory" : "text-charcoal hover:text-maroon";
   const divider = tone === "light" ? "text-ivory/35" : "text-charcoal-soft/50";
 
   return (

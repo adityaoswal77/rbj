@@ -57,6 +57,10 @@ and `hero.tagline`, and the **404 page** uses the `notFound` block.
 `{years}` inside the About text is replaced automatically with the number of years
 the shop has been open. Leave it as `{years}` — don't type a number.
 
+The Marathi is written in everyday spoken Marathi (आमचं, सोनं, दुकान), not
+formal translation. Keep new lines in the same tone. Watch jewellery-trade words:
+घडणावळ means *making charges*, so use घडवणूक or घडण for craftsmanship.
+
 ### Adding or removing a collection
 
 The four collection cards come from the `items` list in the `collections` block.
@@ -96,6 +100,10 @@ The placeholders are marked `aria-hidden`, because each one sits beside text tha
 already says what it is — the grey box next to "Gold Jewellery" adds nothing for
 someone using a screen reader. Real photographs should keep `alt=""` for the same
 reason, unless a particular photograph carries information the copy does not.
+
+After adding the hero photograph, run Lighthouse on the page. The text over it
+must stay at 4.5:1 or above. If a bright photo pushes it below, raise the scrim in
+`Hero.tsx` (`bg-maroon/80`) rather than changing the text colours.
 
 ## 4. One rule for developers
 

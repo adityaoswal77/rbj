@@ -74,6 +74,10 @@ Defined once in `src/app/globals.css` under `@theme`:
   `md` up, via the `<Section>` component
 - Reusable pieces: `Button` (primary / outline / quiet), `SectionHeading`,
   `CollectionCard`, `Placeholder`, `Section` + `Container`
+- **Text over the hero** sits on a flat `bg-maroon/80` scrim, with secondary
+  light text at `ivory/80`. That keeps the gold eyebrow at 4.7:1 and the header
+  text at 5.5:1 even over a light image (AA needs 4.5:1). Don't drop either
+  below `/80` without re-measuring.
 
 ## The language toggle
 
